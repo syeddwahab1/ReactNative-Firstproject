@@ -6,112 +6,128 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import type {Node} from 'react';
+import React, {useState} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
   Text,
-  useColorScheme,
   View,
+  Button,
+  TextInput,
+  StyleSheet,
+  FlatList,
+  ScrollView,
 } from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-/* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
- * LTI update could not be added via codemod */
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+const App = () => {
+  const [age, setAge] = useState('20');
+  const [name, setName] = useState('wahab');
+  const [txtinpname, setTxtinpname] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [display, setDisplay] = useState(false);
+  const usersArray = [
+    {name: 'john', id: 1},
+    {name: 'bruce', id: 2},
+    {name: 'mike', id: 3},
+  ];
+  const resetForm = () => {
+    setDisplay(false);
+    setEmail('');
+    setTxtinpname('');
+    setPassword('');
+  };
+  function testname() {
+    setName('Syed wahabuddin');
+  }
+  const fruit = () => {
+    console.warn('function fruit is called');
+  };
+  const helloname = val => {
+    console.warn(val);
+  };
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View>
+      {/* Button and onPress */}
+      <Text style={{fontSize: 20}}> Button and Onpress event </Text>
+      <Button title="on Press" onPress={fruit} color={'red'} />
+      <Button
+        title="on Press 2"
+        onPress={() => helloname('hello wahab')}
+        color={'green'}
+      />
+      {/* states  */}
+      <Text>{name}</Text>
+      <Button title="Update Name" onPress={testname} />
+      {/* props  */}
+      <Button
+        title="Update Props"
+        onPress={() => setAge('30')}
+        color={'green'}
+      />
+      <User age={age} name={name} />
+      {/* {form in react native } */}
+      <Text style={{fontSize: 25}}>Handle Text Input</Text>
+      <Text style={{fontSize: 25}}>your name is : {txtinpname}</Text>
+      <TextInput
+        placeholder="Enter your name"
+        style={styles.TextInput}
+        value={txtinpname}
+        onChangeText={text => setTxtinpname(text)}
+      />
+      <Button title="Clear input value" onPress={() => setTxtinpname('')} />
+      <TextInput
+        placeholder="Enter your Email Address"
+        style={styles.TextInput}
+        value={email}
+        onChangeText={text => setEmail(text)}
+      />
+      <TextInput
+        placeholder="Enter your Password"
+        secureTextEntry={true}
+        style={styles.TextInput}
+        value={password}
+        onChangeText={text => setPassword(text)}
+      />
+
+      <Button title="Show Details" onPress={() => setDisplay(true)} />
+      <Button title="Clear Details" color={'green'} onPress={resetForm} />
+      {display ? (
+        <>
+          <Text style={{fontSize: 25}}>your name is : {txtinpname}</Text>
+          <Text style={{fontSize: 25}}>your emaail is : {email}</Text>
+          <Text style={{fontSize: 25}}>your password is : {password}</Text>
+        </>
+      ) : null}
+      {/* {list with Flatlist} */}
+      <Text style={{fontSize: 25}}>list with flatlists</Text>
+      <FlatList
+        data={usersArray}
+        renderItem={({item}) => <Text>{item.name}</Text>}
+        // {used for scrolling etc }
+        keyExtractor={item => item.id}
+      />
+      <Text style={{fontSize: 25}}>list with map function</Text>
+      <ScrollView>
+        {usersArray.map(item => (
+          <Text>{item.name}</Text>
+        ))}
+      </ScrollView>
     </View>
   );
 };
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+const User = props => {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View>
+      <Text style={{fontSize: 20}}>the users age is {props.age}</Text>
+      <Text style={{fontSize: 20}}>the users name is {props.name}</Text>
+    </View>
   );
 };
-
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  TextInput: {
+    fontSize: 20,
+    color: 'red',
+    borderWidth: 2,
+    borderColor: 'green',
+    margin: 10,
   },
 });
-
 export default App;
